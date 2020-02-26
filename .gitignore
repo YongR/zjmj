@@ -5,6 +5,7 @@
 /safefile
 /nbproject
 /config/cert
+/LICENSE
 /composer.lock
 /public/upload
 /public/static/theme/css/console.custom.css
