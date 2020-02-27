@@ -13,27 +13,27 @@
 // | github 代码仓库：https://github.com/YongR/zjmj
 // +----------------------------------------------------------------------
 
-namespace app\store\controller;
+namespace app\model\controller;
 
 use library\Controller;
 use library\tools\Data;
 use think\Db;
 
 /**
- * 商品信息管理
+ * 样版管理
  * Class Goods
- * @package app\store\controller
+ * @package app\model\controller
  */
-class Goods extends Controller
+class Model1 extends Controller
 {
     /**
      * 指定数据表
      * @var string
      */
-    protected $table = 'StoreGoods';
+    protected $table = 'ModelModel1';
 
     /**
-     * 商品信息管理
+     * 样版信息管理
      * @auth true
      * @menu true
      * @throws \think\Exception
@@ -58,8 +58,8 @@ class Goods extends Controller
      */
     protected function _index_page_filter(&$data)
     {
-        $this->clist = Db::name('StoreGoodsCate')->where(['is_deleted' => '0', 'status' => '1'])->select();
-        $list = Db::name('StoreGoodsList')->where('status', '1')->whereIn('goods_id', array_unique(array_column($data, 'id')))->select();
+         $this->clist = Db::name('ModelModel1Cate')->where(['is_deleted' => '0', 'status' => '1'])->select();
+        $list = Db::name('ModelModel1List')->where('status', '1')->whereIn('goods_id', array_unique(array_column($data, 'id')))->select();
         foreach ($data as &$vo) {
             list($vo['list'], $vo['cate']) = [[], []];
             foreach ($list as $goods) if ($goods['goods_id'] === $vo['id']) array_push($vo['list'], $goods);
@@ -68,7 +68,7 @@ class Goods extends Controller
     }
 
     /**
-     * 商品库存入库
+     * 样版入库
      * @auth true
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
@@ -80,9 +80,9 @@ class Goods extends Controller
     {
         if ($this->request->isGet()) {
             $GoodsId = $this->request->get('id');
-            $goods = Db::name('StoreGoods')->where(['id' => $GoodsId])->find();
+            $goods = Db::name('ModelModel1')->where(['id' => $GoodsId])->find();
             empty($goods) && $this->error('无效的商品信息，请稍候再试！');
-            $goods['list'] = Db::name('StoreGoodsList')->where(['goods_id' => $GoodsId])->select();
+            $goods['list'] = Db::name('ModelModel1List')->where(['goods_id' => $GoodsId])->select();
             $this->fetch('', ['vo' => $goods]);
         } else {
             list($post, $data) = [$this->request->post(), []];
@@ -93,8 +93,8 @@ class Goods extends Controller
                     'number_stock' => $post['goods_number'][$key],
                 ]);
                 if (!empty($data)) {
-                    Db::name('StoreGoodsStock')->insertAll($data);
-                    \app\store\service\GoodsService::syncStock($post['id']);
+                    Db::name('ModelModel1Stock')->insertAll($data);
+                    \app\model\service\Model1Service::syncStock($post['id']);
                     $this->success('商品信息入库成功！');
                 }
             }
@@ -103,7 +103,7 @@ class Goods extends Controller
     }
 
     /**
-     * 添加商品信息
+     * 添加样版信息
      * @auth true
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
@@ -113,13 +113,13 @@ class Goods extends Controller
      */
     public function add()
     {
-        $this->title = '添加商品信息';
+        $this->title = '添加样版信息';
         $this->isAddMode = '1';
         $this->_form($this->table, 'form');
     }
 
     /**
-     * 编辑商品信息
+     * 编辑样版信息
      * @auth true
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
@@ -129,7 +129,7 @@ class Goods extends Controller
      */
     public function edit()
     {
-        $this->title = '编辑商品信息';
+        $this->title = '编辑样版信息';
         $this->isAddMode = '0';
         $this->_form($this->table, 'form');
     }
@@ -145,18 +145,19 @@ class Goods extends Controller
      */
     protected function _form_filter(&$data)
     {   
+        // var_dump($this->request->isPost());die();
         // 生成商品ID
         if (empty($data['id'])) $data['id'] = Data::uniqidNumberCode(14);
         if ($this->request->isGet()) {
             $fields = 'goods_spec,goods_id,status,price_market market,price_selling selling,number_virtual `virtual`,number_express express,sku';
-            $defaultValues = Db::name('StoreGoodsList')->where(['goods_id' => $data['id']])->column($fields);
+            $defaultValues = Db::name('ModelModel1List')->where(['goods_id' => $data['id']])->column($fields);
             $this->defaultValues = json_encode($defaultValues, JSON_UNESCAPED_UNICODE);
-            $this->cates = Db::name('StoreGoodsCate')->where(['is_deleted' => '0', 'status' => '1'])->order('sort desc,id desc')->select();
+            $this->cates = Db::name('ModelModel1Cate')->where(['is_deleted' => '0', 'status' => '1'])->order('sort desc,id desc')->select();
         } elseif ($this->request->isPost()) {
             if (empty($data['logo'])) $this->error('商品LOGO不能为空，请上传图片');
             if (empty($data['image'])) $this->error('商品展示图片不能为空，请上传图片');
-            Db::name('StoreGoodsList')->where(['goods_id' => $data['id']])->update(['status' => '0']);
-            foreach (json_decode($data['lists'], true) as $vo) Data::save('StoreGoodsList', [
+            Db::name('ModelModel1List')->where(['goods_id' => $data['id']])->update(['status' => '0']);
+            foreach (json_decode($data['lists'], true) as $vo) Data::save('ModelModel1List', [
                 'goods_id'       => $data['id'],
                 'sku'            => $vo[0]['sku'],
                 'goods_spec'     => $vo[0]['key'],
@@ -181,7 +182,7 @@ class Goods extends Controller
     }
 
     /**
-     * 禁用商品信息
+     * 禁用样版信息
      * @auth true
      * @throws \think\Exception
      * @throws \think\exception\PDOException
@@ -192,7 +193,7 @@ class Goods extends Controller
     }
 
     /**
-     * 启用商品信息
+     * 启用样版信息
      * @auth true
      * @throws \think\Exception
      * @throws \think\exception\PDOException
@@ -203,7 +204,7 @@ class Goods extends Controller
     }
 
     /**
-     * 删除商品信息
+     * 删除样版信息
      * @auth true
      * @throws \think\Exception
      * @throws \think\exception\PDOException

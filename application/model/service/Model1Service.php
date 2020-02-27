@@ -13,16 +13,16 @@
 // | github 代码仓库：https://github.com/YongR/zjmj
 // +----------------------------------------------------------------------
 
-namespace app\store\service;
+namespace app\model\service;
 
 use think\Db;
 
 /**
  * 商品数据管理
- * Class GoodsService
- * @package app\store\logic
+ * Class Model1Service
+ * @package app\model\logic
  */
-class GoodsService
+class Model1Service
 {
     /**
      * 同步商品库存信息
@@ -38,7 +38,7 @@ class GoodsService
     {
         // 商品入库统计
         $fields = "goods_id,goods_spec,ifnull(sum(number_stock),0) number_stock";
-        $stockList = Db::name('StoreGoodsStock')->field($fields)->where(['goods_id' => $goodsId])->group('goods_id,goods_spec')->select();
+        $stockList = Db::name('ModelModel1Stock')->field($fields)->where(['goods_id' => $goodsId])->group('goods_id,goods_spec')->select();
         // 商品销量统计
         $where = [['b.goods_id', 'eq', "'".$goodsId."'"], ['a.status', 'in', ['1', '2', '3', '4', '5']]];
         $fields = 'b.goods_id,b.goods_spec,ifnull(sum(b.number_goods),0) number_sales';
@@ -54,7 +54,7 @@ class GoodsService
         }
         unset($salesList, $stockList);
         // 更新商品规格销量及库存
-        foreach ($dataList as $vo) Db::name('StoreGoodsList')->where([
+        foreach ($dataList as $vo) Db::name('ModelModel1List')->where([
             'goods_id'   => $goodsId,
             'goods_spec' => $vo['goods_spec'],
         ])->update([
@@ -62,7 +62,7 @@ class GoodsService
             'number_sales' => $vo['number_sales'],
         ]);
         // 更新商品主体销量及库存
-        Db::name('StoreGoods')->where(['id' => $goodsId])->update([
+        Db::name('ModelModel1')->where(['id' => $goodsId])->update([
             'number_stock' => intval(array_sum(array_column($dataList, 'number_stock'))),
             'number_sales' => intval(array_sum(array_column($dataList, 'number_sales'))),
         ]);
