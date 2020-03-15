@@ -1,0 +1,152 @@
+<form class="layui-form layui-card" action="{:request()->url()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">会员ID</label>
+            <div class="layui-input-block">
+                <input name="mid" value='{$vo.mid|default=""}' required placeholder="请输入会员ID" class="layui-input">
+                <p class="help-block">必填，请在会员信息管理复制会员ID</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input name="name" value='{$vo.name|default=""}' required placeholder="请输入真实姓名" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">代理商等级</label>
+            <div class="layui-input-block">
+                <select name='agent_level' class='layui-select' lay-search>
+                    <!--{foreach $agent_levels as $levels}-->
+                    <!--{eq name='levels.id' value='$vo.agent_level|default=0'}-->
+                    <option selected value='{$levels.id}'>{$levels.name}</option>
+                    <!--{else}-->
+                    <option value='{$levels.id}'>{$levels.name}</option>
+                    <!--{/eq}-->
+                    <!--{/foreach}-->
+                </select>
+                <p class="help-block">必选</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input name="tel" value='{$vo.tel|default=""}' required placeholder="请输入有效电话" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">身份证号</label>
+            <div class="layui-input-block">
+                <input name="id_card" value='{$vo.id_card|default=""}' required placeholder="请输入正确身份证号" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">收款银行</label>
+            <div class="layui-input-block">
+                <input name="bank_name" value='{$vo.bank_name|default=""}' required placeholder="请输入正确收款银行" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">银行账户</label>
+            <div class="layui-input-block">
+                <input name="bank_account" value='{$vo.bank_account|default=""}' required placeholder="请输入正确银行账户" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">电子邮箱</label>
+            <div class="layui-input-block">
+                <input name="email" placeholder="请输入邮箱账号" value="{$vo.email|default=''}" class="layui-input">
+                <p class="help-block">可选</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">微信账号</label>
+            <div class="layui-input-block">
+                <input name="wechat" placeholder="请输入微信账号" value="{$vo.wechat|default=''}" class="layui-input">
+                <p class="help-block">可选</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">名下会员数</label>
+            <div class="layui-input-block">
+                <input name="member_num" value="{$vo.member_num|default=''}" class="layui-input">
+                <p class="help-block">可选</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">成交数量</label>
+            <div class="layui-input-block">
+                <input name="deal_num" value="{$vo.deal_num|default=''}" class="layui-input">
+                <p class="help-block">可选</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">总奖金</label>
+            <div class="layui-input-block">
+                <input name="total_bonus" value="{$vo.total_bonus|default=''}" class="layui-input">
+                <p class="help-block">可选</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">已提现</label>
+            <div class="layui-input-block">
+                <input name="cash" value="{$vo.cash|default=''}" class="layui-input">
+                <p class="help-block">可选</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">未提现</label>
+            <div class="layui-input-block">
+                <input name="no_cash" value="{$vo.no_cash|default=''}" class="layui-input">
+                <p class="help-block">可选</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">返点</label>
+            <div class="layui-input-block">
+                <input name="return_percent" value="{$vo.return_percent|default=''}" class="layui-input">
+                <p class="help-block">可选</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+
+</form>
+
+
+{block name='script'}
+<script>
+    require(['jquery.autocompleter'], function () {
+        form.render();
+    });
+</script>
+{/block}

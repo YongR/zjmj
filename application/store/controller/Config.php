@@ -17,6 +17,7 @@ namespace app\store\controller;
 
 use app\store\service\ExtendService;
 use library\Controller;
+use library\File;
 
 /**
  * 商城参数配置
@@ -30,30 +31,39 @@ class Config extends Controller
      * 商城参数配置
      * @auth true
      * @menu true
+     * @throws \OSS\Core\OssException
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
     public function index()
     {
-        $this->title = '商城参数配置';
-        $this->applyCsrfToken('save');
-        $this->query = ExtendService::queryChinaSmsBalance();
-        $this->query2 = ExtendService::queryGlobeSmsBalance();
-        $this->fetch();
-    }
-
-    /**
-     * 保存商城参数
-     * @auth true
-     * @throws \think\Exception
-     * @throws \think\exception\PDOException
-     */
-    public function save()
-    {
-        if ($this->request->isPost()) {
-            $this->applyCsrfToken('save');
+        $this->applyCsrfToken();
+        if ($this->request->isGet()) {
+            $this->title = '商城参数配置';
+            $this->query = ExtendService::queryChinaSmsBalance();
+            // $file = File::instance('local');
+            // $this->wechat_mch_ssl_cer = sysconf('wechat_mch_ssl_cer');
+            // $this->wechat_mch_ssl_key = sysconf('wechat_mch_ssl_key');
+            $this->wechat_mch_ssl_p12 = sysconf('wechat_mch_ssl_p12');
+            // if (file_exists($this->wechat_mch_ssl_cer)) $this->wechat_mch_ssl_cer = '';
+            // if (file_exists($this->wechat_mch_ssl_key)) $this->wechat_mch_ssl_key = '';
+            // if (!file_exists($this->wechat_mch_ssl_p12)){
+            //     $this->wechat_mch_ssl_p12 = '';
+            // }
+            $this->fetch();
+        } else {
+            // if ($this->request->post('wechat_mch_ssl_type') === 'p12') {
+            //     if (!($sslp12 = $this->request->post('wechat_mch_ssl_p12'))) {
+            //         $mchid = $this->request->post('wechat_mch_id');
+            //         $content = File::instance('local')->get($sslp12, true);
+            //         if (!openssl_pkcs12_read($content, $certs, $mchid)) {
+            //             $this->error('商户MCH_ID与支付P12证书不匹配！');
+            //         }
+            //     }
+            // }
             foreach ($this->request->post() as $k => $v) sysconf($k, $v);
-            $this->success('商城短信配置保存成功！');
+            sysoplog('商城参数配置', '修改商城参数配置成功');
+            $this->success('商城参数配置成功！');
         }
     }
 

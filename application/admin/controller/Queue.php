@@ -3,14 +3,14 @@
 // +----------------------------------------------------------------------
 // | ThinkAdmin
 // +----------------------------------------------------------------------
-// | 版权所有 2020~
+// | 版权所有 2014~2019 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
 // +----------------------------------------------------------------------
-// | 
+// | 官方网站: http://demo.thinkadmin.top
 // +----------------------------------------------------------------------
 // | 开源协议 ( https://mit-license.org )
 // +----------------------------------------------------------------------
-// | gitee 代码仓库：https://gitee.com/yr92/zjmj
-// | github 代码仓库：https://github.com/YongR/zjmj
+// | gitee 代码仓库：https://gitee.com/zoujingli/ThinkAdmin
+// | github 代码仓库：https://github.com/zoujingli/ThinkAdmin
 // +----------------------------------------------------------------------
 
 namespace app\admin\controller;
@@ -46,6 +46,7 @@ class Queue extends Controller
      */
     public function index()
     {
+        Db::name($this->table)->whereTime('create_at','<',date("Y-m-d H:i:s", strtotime("-3 day")))->delete();
         if (session('user.username') === 'admin') try {
             $this->message = Console::call('xtask:state')->fetch();
             $this->command = ProcessService::instance()->think('xtask:start');
@@ -57,7 +58,12 @@ class Queue extends Controller
         $this->title = '系统任务管理';
         $this->iswin = ProcessService::instance()->iswin();
         $query = $this->_query($this->table)->dateBetween('create_at,start_at,end_at');
-        $query->like('title,preload')->equal('status')->order('id desc')->page();
+        if(!empty($_REQUEST['create_time'])){
+            $create_time = explode(' - ',$_REQUEST['create_time']);
+            $query->like('title,desc')->equal('status')->whereTime('create_time','between',[$create_time[0],$create_time[1]])->order('id desc')->page();
+        }else{
+            $query->like('title,desc')->equal('status')->order('id desc')->page();
+        }
     }
 
     /**

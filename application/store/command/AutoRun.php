@@ -72,17 +72,19 @@ class AutoRun extends Command
     private function autoCancelOrder()
     {
         $datetime = $this->getDatetime('store_order_wait_time');
+        $store_order_wait_time = intval(sysconf('store_order_wait_time') * 60);
         $where = [['status', 'in', ['1', '2']], ['pay_state', 'eq', '0'], ['create_at', '<', $datetime]];
         $count = Db::name('StoreOrder')->where($where)->update([
             'status'       => '0',
             'cancel_state' => '1',
             'cancel_at'    => date('Y-m-d H:i:s'),
-            'cancel_desc'  => '30分钟未完成支付自动取消订单',
+            'cancel_desc'  => $store_order_wait_time.'分钟未完成支付自动取消订单',
         ]);
         if ($count > 0) {
-            $this->output->info("共计自动取消了30分钟未支付的{$count}笔订单！");
+            $this->output->info("共计自动取消了{$store_order_wait_time}分钟未支付的{$count}笔订单！");
+            $this->addQueue(3,"共计自动取消了{$store_order_wait_time}分钟未支付的{$count}笔订单！","取消无效的订单信息");
         } else {
-            $this->output->comment('没有需要自动取消30分钟未支付的订单记录！');
+            $this->output->comment("没有需要自动取消{$store_order_wait_time}分钟未支付的订单记录！");
         }
     }
 
@@ -97,14 +99,16 @@ class AutoRun extends Command
     private function autoRemoveOrder()
     {
         $datetime = $this->getDatetime('store_order_clear_time');
+        $store_order_clear_time = intval(sysconf('store_order_clear_time'));
         $where = [['status', 'eq', '0'], ['pay_state', 'eq', '0'], ['create_at', '<', $datetime]];
         $list = Db::name('StoreOrder')->where($where)->limit(20)->select();
         if (count($orderNos = array_unique(array_column($list, 'order_no'))) > 0) {
-            $this->output->info("自动删除前一天已经取消的订单：" . PHP_EOL . join(',' . PHP_EOL, $orderNos));
+            $this->output->info("自动删除{$store_order_clear_time}小时前已经取消的订单：" . PHP_EOL . join(',' . PHP_EOL, $orderNos));
+            $this->addQueue(3,"自动删除{$store_order_clear_time}小时前已经取消的订单：" . PHP_EOL . join(',' . PHP_EOL, $orderNos),"删除无效的订单信息");
             Db::name('StoreOrder')->whereIn('order_no', $orderNos)->delete();
             Db::name('StoreOrderList')->whereIn('order_no', $orderNos)->delete();
         } else {
-            $this->output->comment('没有需要自动删除前一天已经取消的订单！');
+            $this->output->comment("没有需要自动删除{$store_order_clear_time}小时前已经取消的订单！");
         }
     }
 
@@ -191,6 +195,20 @@ class AutoRun extends Command
     {
         $minutes = intval(sysconf($code) * 60);
         return date('Y-m-d H:i:s', strtotime("-{$minutes} minutes"));
+    }
+
+    /**
+     * 添加任务信息
+     * @param intval $status 任务状态
+     * @param string $desc 处理结果
+     * @param string $title 处理项名称
+     * @throws Exception
+     * @throws PDOException
+     */
+    protected function addQueue($status, $desc, $title)
+    {
+        $data = ['status' => $status, 'create_at' => date('Y-m-d H:i:s'), 'desc' => $desc, 'title' => $title];
+        Db::name('SystemQueue')->insert($data);
     }
 
 }

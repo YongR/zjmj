@@ -32,7 +32,7 @@ class Sess extends Command
      */
     protected function configure()
     {
-        $this->setName('xclean:session')->setDescription('Clean up invalid session files');
+        $this->setName('xclean:session')->setDescription('清理无效的会话文件');
     }
 
     /**
@@ -42,7 +42,7 @@ class Sess extends Command
      */
     protected function execute(Input $input, Output $output)
     {
-        $output->comment('Start cleaning up invalid session files');
+        $output->comment('开始清理无效的会话文件');
         foreach (glob(config('session.path') . 'sess_*') as $file) {
             list($fileatime, $filesize) = [fileatime($file), filesize($file)];
             if ($filesize < 1 || $fileatime < time() - 3600) {
@@ -50,7 +50,7 @@ class Sess extends Command
                 @unlink($file);
             }
         }
-        $output->comment('Cleaning up invalid session files complete');
+        $output->comment('清理无效的会话文件完成');
     }
 
 }

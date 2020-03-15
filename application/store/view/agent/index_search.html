@@ -1,0 +1,67 @@
+<fieldset>
+    <legend>条件搜索</legend>
+    <form class="layui-form layui-form-pane form-search" action="{:request()->url()}" onsubmit="return false" method="get" autocomplete="off">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">代理商姓名</label>
+            <div class="layui-input-inline">
+                <input name="name" value="{$Think.get.name|default=''}" placeholder="请输入代理商姓名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">代理商电话</label>
+            <div class="layui-input-inline">
+                <input name="tel" value="{$Think.get.tel|default=''}" placeholder="请输入代理商电话" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">代理邮箱</label>
+            <div class="layui-input-inline">
+                <input name="email" value="{$Think.get.email|default=''}" placeholder="请输入代理邮箱" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">代理商等级</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="agent_level" lay-search>
+                    <option value="">-- 全部等级 --</option>
+                    {foreach $levels as $v}
+                    <!--{eq name='Think.get.agent_level' value='$v.id.""'}-->
+                    <option selected value="{$v.id}">{$v.name}</option>
+                    <!--{else}-->
+                    <option value="{$v.id}">{$v.name}</option>
+                    <!--{/eq}-->
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">审核状态</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="status">
+                    {foreach [''=>'- 显示全部 -','0'=>'未审核','1'=>'已审核'] as $k=>$v}
+                    <!--{eq name='Think.get.status' value='$k.""'}-->
+                    <option selected value="{$k}">{$v}</option>
+                    <!--{else}-->
+                    <option value="{$k}">{$v}</option>
+                    <!--{/eq}-->
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">代理日期</label>
+            <div class="layui-input-inline">
+                <input data-date-range name="create_time" value="{$Think.get.create_time|default=''}" placeholder="请选择代理日期" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+        </div>
+    </form>
+    <script>
+        window.form.render();
+        $('[data-export-list]').on('click', function () {
+            window.location.href = '{:url("@")}?s=store/order/index&' + $(this).parents('form').serialize() + '&action=export'
+        });
+    </script>
+</fieldset>

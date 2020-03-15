@@ -1,0 +1,60 @@
+{extend name='admin@main'}
+
+{block name="button"}
+<!--{if auth("store/agent_level/add")}-->
+<button data-open='{:url("add")}' data-title="添加代理商" class='layui-btn layui-btn-sm layui-btn-primary'>添加代理等级</button>
+<!--{/if}-->
+<!--{if auth("store/agent_level/remove")}-->
+<button data-action='{:url("remove")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>删除代理等级</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='agent_level/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <input data-auto-none data-check-target='.list-check-box' type='checkbox'>
+            </th>
+            <th class='text-left nowrap'>代理等级</th>
+            <th class="text-left nowrap">等级名称</th>
+            <th class='text-left nowrap'>返佣比例</th>
+            <th class='text-center nowrap'>操作</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='list-table-check-td think-checkbox'><input class="list-check-box" value='{$vo.id}' type='checkbox'></td>
+            <td class='text-left nowrap'>
+                <div class="inline-block">{$vo.type|default='--'}</div>
+            </td>
+            <td class='text-left nowrap'>
+                <div class="inline-block">{$vo.name|default='--'}</div>
+            </td>            
+            <td class='text-left nowrap'>
+                <div class="inline-block">{$vo.return_percent|default='--'} %</div>
+            </td>
+            <td class="text-center nowrap">
+                {if auth("store/agent_level/edit")}
+                <a data-title="编辑商品分类" class="layui-btn layui-btn-sm" data-modal='{:url("edit")}?id={$vo.id}'>编 辑</a>
+                {/if}
+
+                {if auth("store/agent_level/remove")}
+                <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="确定要删除数据吗?" data-action="{:url('remove')}" data-value="id#{$vo.id}">删 除</a>
+                {/if}
+
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+
+</div>
+{/block}

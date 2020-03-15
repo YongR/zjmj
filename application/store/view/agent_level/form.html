@@ -1,0 +1,49 @@
+<form class="layui-form layui-card" action="{:request()->url()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">等级名称</label>
+            <div class="layui-input-block">
+                <input name="name" value='{$vo.name|default=""}' required placeholder="请输入等级名称" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">代理等级</label>
+            <div class="layui-input-block">
+                <input name="type" value='{$vo.type|default=""}' required placeholder="请输入代理等级" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">返佣比例</label>
+            <div class="layui-input-block">
+                <input name="return_percent" value='{$vo.return_percent|default=""}' required placeholder="请输入返佣比例" class="layui-input">
+                <p class="help-block">必填,输入整数1就是1%,或者小数0.5就是0.5%</p>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+
+</form>
+
+
+{block name='script'}
+<script>
+    require(['jquery.autocompleter'], function () {
+        form.render();
+    });
+</script>
+{/block}
