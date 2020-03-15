@@ -1,0 +1,89 @@
+<form class="layui-form layui-card" action="{:request()->url()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">会员ID</label>
+            <div class="layui-input-block">
+                <input name="mid" value='{$vo.mid|default=""}' required placeholder="请输入会员ID" class="layui-input">
+                <p class="help-block">必填，请在会员信息管理复制会员ID</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">代理商ID</label>
+            <div class="layui-input-block">
+                <input name="agent_id" value='{$vo.agent_id|default=""}' required placeholder="请输入代理商ID" class="layui-input">
+                <p class="help-block">必填，请在代理商列表复制代理商ID</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input name="name" value='{$vo.name|default=""}' required placeholder="请输入真实姓名" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input name="tel" value='{$vo.tel|default=""}' required placeholder="请输入有效电话" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">提现金额</label>
+            <div class="layui-input-block">
+                <input name="cash" value='{$vo.cash|default=""}' required placeholder="请输入提现金额" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付宝账号</label>
+            <div class="layui-input-block">
+                <input name="alipay" value='{$vo.alipay|default=""}' required placeholder="请输入正确支付宝账号" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">银行账户</label>
+            <div class="layui-input-block">
+                <input name="bank_name" value='{$vo.bank_name|default=""}' required placeholder="请输入正确银行账户" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">银行账号</label>
+            <div class="layui-input-block">
+                <input name="bank_account" value='{$vo.bank_account|default=""}' required placeholder="请输入正确银行账号" class="layui-input">
+                <p class="help-block">必填</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+
+</form>
+
+
+{block name='script'}
+<script>
+    require(['jquery.autocompleter'], function () {
+        form.render();
+    });
+</script>
+{/block}

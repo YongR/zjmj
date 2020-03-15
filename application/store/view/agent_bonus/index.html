@@ -1,0 +1,69 @@
+{extend name='admin@main'}
+
+{block name="button"}
+<!--{if auth("store_bonus/agent/add")}-->
+<!-- <button data-open='{:url("add")}' data-title="添加代理商分红" class='layui-btn layui-btn-sm layui-btn-primary'>添加代理商分红</button> -->
+<!--{/if}-->
+<!--{if auth("store_bonus/agent/remove")}-->
+<button data-action='{:url("remove")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>删除代理商分红</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='agent_bonus/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <input data-auto-none data-check-target='.list-check-box' type='checkbox'>
+            </th>
+            <th class="text-left nowrap">会员及代理</th>
+            <th class='text-left nowrap'>订单信息</th>
+            <th class='text-left nowrap'>分成信息</th>
+            <th class='text-center nowrap'>操作</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='list-table-check-td think-checkbox'><input class="list-check-box" value='{$vo.id}' type='checkbox'></td>
+            <td class="text-left nowrap relative">
+                <div class="inline-block">
+                    代理商姓名：<span class="margin-left-5">{$vo.agentval.name|default='--'}</span><br>
+                    昵称：<span class="margin-left-5 color-blue"><a data-action="{:url('store/member/index')}" data-value="id#{$vo.mid}">{$vo.member.nickname|default='--'}</a></span><br>
+                </div>
+            </td>
+            <td class="text-left nowrap">
+                订单ID：<span class="margin-left-5">{$vo.order_id|default='--'}</span><br>
+                订单编号：<span class="margin-left-5">{$vo.order_no|default='--'}</span><br>
+                下单人：<span class="color-blue">{$vo.buyerval.nickname|default='--'}</span><br>
+                下单时间：<span class="color-blue">{$vo.pay_time|default='--'}</span><br>
+            </td>
+            <td class='text-left nowrap'>
+                订单总价：<strong class="color-blue">{$vo.order_total|default='--'}</strong><br>
+                分红奖金：<strong class="color-blue">{$vo.bonus|default='--'}</strong> <br>
+                分红比例：<strong class="color-blue">{$vo.return_percent|default='--'}</strong> %<br>
+                分红时间：<span class="margin-left-5 color-blue">{$vo.create_time|format_datetime|default='--'}</span><br>
+            </td>
+            <td class="text-center nowrap">
+<!--                 {if auth("store/agent_bonus/edit")}
+                <a data-title="编辑商品分类" class="layui-btn layui-btn-sm" data-modal='{:url("edit")}?id={$vo.id}'>编 辑</a>
+                {/if}
+ -->
+                {if auth("store/agent_bonus/remove")}
+                <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="确定要删除数据吗?" data-action="{:url('remove')}" data-value="id#{$vo.id}">删 除</a>
+                {/if}
+
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+
+</div>
+{/block}

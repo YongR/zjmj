@@ -1,0 +1,92 @@
+{extend name='admin@main'}
+
+{block name="button"}
+<!--{if auth("store/agent/add")}-->
+<button data-open='{:url("add")}' data-title="添加代理商" class='layui-btn layui-btn-sm layui-btn-primary'>添加代理商</button>
+<!--{/if}-->
+<!--{if auth("store/agent/remove")}-->
+<button data-action='{:url("remove")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>删除代理商</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='agent/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <input data-auto-none data-check-target='.list-check-box' type='checkbox'>
+            </th>
+            <th class='list-table-sort-td'>
+                <button type="button" data-reload class="layui-btn layui-btn-xs">刷 新</button>
+            </th>
+            <th class="text-left nowrap">会员信息</th>
+            <th class='text-left nowrap'>账户信息</th>
+            <th class='text-left nowrap'>代理信息</th>
+            <th class='text-center nowrap'>操作</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='list-table-check-td think-checkbox'><input class="list-check-box" value='{$vo.id}' type='checkbox'></td>
+            <td class='list-table-sort-td'>
+                <span class="">ID: {$vo.id}</span><br/>
+                <input data-action-blur="{:request()->url()}" data-value="id#{$vo.id};action#sort;sort#{value}" data-loading="false" value="{$vo.sort}" class="list-sort-input">
+            </td>
+            <td class="text-left nowrap relative">
+                {notempty name='vo.member.headimg'}
+                <img data-tips-image style="width:80px;height:80px" src="{$vo.member.headimg|default=''}" class="margin-right-5 text-top">
+                {/notempty}
+                <div class="inline-block">
+                    会员昵称：<span class="margin-left-5 color-blue"><a data-action="{:url('store/member/index')}" data-value="id#{$vo.mid}">{$vo.member.nickname|default='--'}</a></span><br>
+                    代理商姓名：<span class="margin-left-5">{$vo.name|default='--'}</span><br>
+                    代理商手机：<span class="margin-left-5">{$vo.tel|default='--'}</span><br>
+                    代理商邮箱：<span class="margin-left-5e">{$vo.email|default='--'}</span><br>
+                    代理商身份证：<span class="margin-left-5">{$vo.id_card|default='--'}</span><br>
+                </div>
+            </td>
+            <td class="text-left nowrap">
+                收款银行：<span class="margin-left-5">{$vo.bank_name|default='--'}</span><br>
+                银行账户：<span class="margin-left-5">{$vo.bank_account|default='--'}</span><br>
+                总奖金：<strong class="color-blue">{$vo.total_bonus|default='--'}</strong><br>
+                已收提现：<strong class="color-blue">{$vo.cash|default='--'}</strong><br>
+                未收提现：<strong class="color-blue">{$vo.no_cash|default='--'}</strong><br>
+                微信账号：<span class="margin-left-5">{$vo.wechat|default='--'}</span><br>
+                <br>
+            </td>
+            <td class='text-left nowrap'>
+                代理商等级：<strong class="color-green">{$vo.agent_level_val.name|default='--'}</strong> <br>
+                名下会员数量: <strong class="color-blue">{$vo.member_num+0}</strong> 位<br>
+                成交数量: <strong class="color-blue">{$vo.deal_num+0}</strong> 单<br>
+                返点：<strong class="color-blue">{$vo.agent_level_val.return_percent|default='--'}</strong> %<br>
+                代理时间：<span class="margin-left-5 color-blue">{$vo.create_time|format_datetime|default='--'}</span><br>
+            </td>
+            <td class="text-center nowrap">
+                {if $vo.status eq 1 and auth("store/agent/forbid")}
+                <a class="layui-btn layui-btn-sm layui-btn-warm" data-action="{:url('forbid')}" data-value="id#{$vo.id};status#0">已审核</a>
+                {elseif auth("store/agent/resume")}
+                <a class="layui-btn layui-btn-sm layui-btn-warm" data-action="{:url('resume')}" data-value="id#{$vo.id};status#1">未审核</a>
+                {/if}
+
+                {if auth("store/agent/edit")}
+                <a data-title="编辑商品分类" class="layui-btn layui-btn-sm" data-modal='{:url("edit")}?id={$vo.id}'>编 辑</a>
+                {/if}
+
+                {if auth("store/agent/remove")}
+                <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="确定要删除数据吗?" data-action="{:url('remove')}" data-value="id#{$vo.id}">删 除</a>
+                {/if}
+
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+
+</div>
+{/block}

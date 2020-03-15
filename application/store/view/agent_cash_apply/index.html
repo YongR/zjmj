@@ -1,0 +1,101 @@
+{extend name='admin@main'}
+
+{block name="button"}
+<!--{if auth("store/agent_cash_apply/add")}-->
+<button data-open='{:url("add")}' data-title="添加代理商" class='layui-btn layui-btn-sm layui-btn-primary'>添加提现申请</button>
+<!--{/if}-->
+<!--{if auth("store/agent_cash_apply/remove")}-->
+<button data-action='{:url("remove")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>删除提现申请</button>
+<!--{/if}-->
+<!--{if auth("store/agent_cash_apply/resume")}-->
+<button data-action='{:url("resume")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>完成提现申请</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='agent_cash_apply/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <input data-auto-none data-check-target='.list-check-box' type='checkbox'>
+            </th>
+            <th class="text-left nowrap">会员名称</th>
+            <th class='text-left nowrap'>姓名</th>
+            <th class='text-left nowrap'>电话</th>
+            <th class='text-left nowrap'>微信账号</th>
+            <th class='text-left nowrap'>申请时间</th>
+            <th class='text-left nowrap'>银行账户</th>
+            <th class='text-left nowrap'>银行账号</th>
+            <th class='text-left nowrap'>提现金额</th>
+            <th class='text-left nowrap'>提现时间</th>
+            <th class='text-left nowrap'>操作人员</th>
+            <th class='text-center nowrap'>操作</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='list-table-check-td think-checkbox'><input class="list-check-box" value='{$vo.id}' type='checkbox'></td>
+            <td class='text-left nowrap'>
+                {notempty name='vo.member.headimg'}
+                <img data-tips-image style="width:20px;height:20px;vertical-align:top" src="{$vo.member.headimg|default=''}" class="margin-right-5">
+                {/notempty}
+                <div class="inline-block">{$vo.member.nickname|default='--'}</div>
+            </td>
+            <td class='text-left nowrap'>
+                <div class="inline-block">{$vo.name|default='--'}</div>
+            </td>
+            <td class='text-left nowrap'>
+                <div class="inline-block">{$vo.tel|default='--'}</div>
+            </td>
+            <td class='text-left nowrap'>
+                <div class="inline-block">{$vo.wechat|default='--'}</div>
+            </td>
+            <td class='text-left nowrap'>
+                <span class="margin-left-5 color-blue">{$vo.create_time|format_datetime|default='--'}</span>
+            </td>
+            <td class='text-left nowrap'>
+                <div class="inline-block">{$vo.bank_name|default='--'}</div>
+            </td>
+            <td class='text-left'>
+                <div class="inline-block">{$vo.bank_account|default='--'}</div>
+            </td>
+            <td class='text-left'>
+                <div class="inline-block">{$vo.cash|default='--'}</div>
+            </td>
+            <td class='text-left'>
+                <div class="inline-block">{$vo.pass_time|default='--'}</div>
+            </td>
+            <td class='text-left'>
+                <div class="inline-block">{$vo.systemuser.username|default='--'}</div>
+            </td>
+            <td class="text-center nowrap">
+                {if $vo.status eq 1 and auth("store/agent_cash_apply/forbid")}
+                <a class="layui-btn layui-btn-sm layui-btn-warm" >已提现</a>
+                {elseif auth("store/agent_cash_apply/resume")}
+                <a class="layui-btn layui-btn-sm layui-btn-warm" data-action="{:url('resume')}" data-value="id#{$vo.id};status#1">完成提现</a>
+
+                {if auth("store/agent_cash_apply/edit")}
+                <a data-title="编辑" class="layui-btn layui-btn-sm" data-modal='{:url("edit")}?id={$vo.id}'>编 辑</a>
+                {/if}
+                
+                {/if}
+
+                {if auth("store/agent_cash_apply/remove")}
+                <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="确定要删除数据吗?" data-action="{:url('remove')}" data-value="id#{$vo.id}">删 除</a>
+                {/if}
+
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+
+</div>
+{/block}

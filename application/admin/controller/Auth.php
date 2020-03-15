@@ -73,7 +73,6 @@ class Auth extends Controller
             AdminService::instance()->apply(true);
             $this->success('权限授权更新成功！', 'javascript:history.back()');
         } else {
-        var_dump($action);
             $this->title = '权限配置节点';
             $this->_form($this->table, 'apply');
         }

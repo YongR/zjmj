@@ -509,6 +509,22 @@ bu.layui-form.layui-card {
   background: #dcdcdc;
   border-color: #dcdcdc;
 }
+
+.uploadimage:hover span.layui-icon {
+  display: inline-block;
+}
+.uploadimage span.layui-icon {
+  display: none;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 22px;
+  color: #fff;
+  right: 0;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
+}
+
 /** 手机盒子及微信菜单 */
 .mobile-preview {
   width: 317px;
